@@ -1,0 +1,133 @@
+# Terminium
+
+A self-hosted, open-source alternative to Termius for SSH connection management.
+
+## Features
+
+- 🖥️ **Cross-platform**: Windows, macOS, and Linux support
+- 🔐 **Self-hosted**: Run your own Debian-based server
+- 🔑 **Certificate Authentication**: Secure key-based authentication
+- 📁 **ICMSF Files**: Import/Export encrypted connection profiles
+- 💾 **Encrypted Storage**: Secure local credential storage
+- 🎨 **Modern UI**: Clean interface inspired by Termius
+- 🔌 **SSH Management**: Full-featured SSH client with terminal emulation
+
+## Architecture
+
+### Server (Debian)
+- OpenSSH server with enhanced security
+- Connection management API
+- Certificate authority for client authentication
+- User management system
+
+### Client (Cross-platform Desktop App)
+- Built with Electron + React + TypeScript
+- Terminal emulation with xterm.js
+- SSH2 protocol support
+- AES-256 encryption for local data
+- ICMSF (Import Connection Mothership Server File) support
+
+## Quick Start
+
+### Server Setup (Debian/Ubuntu)
+```bash
+cd server
+sudo ./setup.sh
+```
+
+### Client Installation
+
+**From Release:**
+Download the latest release for your platform from the releases page.
+
+**From Source:**
+```bash
+cd client
+npm install
+npm run build
+npm run dist
+```
+
+## First-Time Setup
+
+### Option 1: New Server Connection
+1. Launch Terminium
+2. Create username and password
+3. Enter your server IP address
+4. Follow the setup wizard to:
+   - Install dependencies
+   - Generate certificates
+   - Configure authentication
+   - Enable encryption
+
+### Option 2: Import Existing Configuration
+1. Launch Terminium
+2. Select "Import Connection"
+3. Choose your .icmsf file
+4. Enter your credentials to decrypt
+
+## ICMSF File Format
+
+ICMSF (Import Connection Mothership Server File) is an encrypted file format containing:
+- Server IP address
+- Connection ports
+- Authentication certificates
+- User credentials (encrypted)
+
+**File Extension:** `.icmsf`
+**Encryption:** AES-256-GCM
+**Format:** JSON (encrypted)
+
+## Development
+
+### Prerequisites
+- Node.js 18+
+- npm or yarn
+- For server: Debian 11+ or Ubuntu 20.04+
+
+### Build Client
+```bash
+cd client
+npm install
+npm run dev        # Development mode
+npm run build      # Production build
+npm run dist       # Create distributable
+```
+
+### Run Server
+```bash
+cd server
+npm install
+npm start
+```
+
+## Security Features
+
+- ✅ Certificate-based authentication
+- ✅ Password authentication disabled by default
+- ✅ AES-256-GCM encryption for stored data
+- ✅ Encrypted ICMSF files
+- ✅ Secure key storage (OS keychain integration)
+- ✅ Optional full disk encryption support
+
+## License
+
+MIT License - See LICENSE file for details
+
+## Contributing
+
+Contributions are welcome! Please read CONTRIBUTING.md for guidelines.
+
+## Roadmap
+
+- [ ] SFTP file transfer
+- [ ] Port forwarding
+- [ ] Snippet management
+- [ ] Team collaboration features
+- [ ] Mobile apps (iOS/Android)
+- [ ] Dark/Light theme customization
+- [ ] Multi-factor authentication
+
+## Support
+
+For issues and questions, please use the GitHub issue tracker.
