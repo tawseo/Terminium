@@ -1,0 +1,99 @@
+name: Build macOS Client
+
+on:
+  push:
+    tags:
+      - 'v*'  # Triggers on version tags like v1.0.0
+  workflow_dispatch:  # Allows manual trigger from GitHub UI
+
+jobs:
+  build-macos:
+    runs-on: macos-latest
+
+    strategy:
+      matrix:
+        arch: [x64, arm64, universal]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: client/package-lock.json
+
+      - name: Install dependencies
+        run: |
+          cd client
+          npm ci
+
+      - name: Build Electron app
+        run: |
+          cd client
+          npm run build
+
+      - name: Build DMG - ${{ matrix.arch }}
+        run: |
+          cd client
+          if [ "${{ matrix.arch }}" = "universal" ]; then
+            npm run dist:mac:universal
+          elif [ "${{ matrix.arch }}" = "arm64" ]; then
+            npm run dist:mac:arm
+          else
+            npm run dist:mac:intel
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: List build outputs
+        run: |
+          echo "Build outputs:"
+          ls -lh client/release/*.dmg || echo "No DMG files found"
+          ls -lh client/release/*.zip || echo "No ZIP files found"
+
+      - name: Upload DMG artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Terminium-macOS-${{ matrix.arch }}
+          path: |
+            client/release/*.dmg
+            client/release/*.zip
+          retention-days: 30
+
+      - name: Upload to GitHub Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            client/release/*.dmg
+            client/release/*.zip
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  build-summary:
+    needs: build-macos
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+
+    steps:
+      - name: Create build summary
+        run: |
+          echo "# 🎉 macOS Builds Complete!" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## Downloads Available" >> $GITHUB_STEP_SUMMARY
+          echo "- **Intel Macs (x64)**: Terminium-*-x64.dmg" >> $GITHUB_STEP_SUMMARY
+          echo "- **Apple Silicon (M1/M2/M3)**: Terminium-*-arm64.dmg" >> $GITHUB_STEP_SUMMARY
+          echo "- **Universal (All Macs)**: Terminium-*-universal.dmg" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## Installation" >> $GITHUB_STEP_SUMMARY
+          echo "1. Download the appropriate DMG for your Mac" >> $GITHUB_STEP_SUMMARY
+          echo "2. Open the DMG file" >> $GITHUB_STEP_SUMMARY
+          echo "3. Drag Terminium to Applications folder" >> $GITHUB_STEP_SUMMARY
+          echo "4. Launch from Applications" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "📖 See [macOS Installation Guide](docs/MACOS_INSTALLATION.md) for details" >> $GITHUB_STEP_SUMMARY
