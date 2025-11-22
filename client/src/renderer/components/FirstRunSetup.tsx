@@ -167,8 +167,8 @@ const FirstRunSetup: React.FC<Props> = ({ onComplete }) => {
         setError('Please enter both username and password');
         return;
       }
-      if (credentials.password.length < 8) {
-        setError('Password must be at least 8 characters');
+      if (credentials.password.length < 12) {
+        setError('Password must be at least 12 characters for strong encryption');
         return;
       }
       setStep(2);
@@ -255,7 +255,7 @@ const FirstRunSetup: React.FC<Props> = ({ onComplete }) => {
               <Label>Password</Label>
               <Input
                 type="password"
-                placeholder="Enter password (min 8 characters)"
+                placeholder="Enter password (min 12 characters)"
                 value={credentials.password}
                 onChange={e => setCredentials({ ...credentials, password: e.target.value })}
               />

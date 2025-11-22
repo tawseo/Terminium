@@ -68,15 +68,19 @@ npm run dist
 
 ## ICMSF File Format
 
-ICMSF (Import Connection Mothership Server File) is an encrypted file format containing:
+ICMSF (Import Connection Mothership Server File) is a military-grade encrypted file format containing:
 - Server IP address
 - Connection ports
 - Authentication certificates
 - User credentials (encrypted)
 
 **File Extension:** `.icmsf`
-**Encryption:** AES-256-GCM
-**Format:** JSON (encrypted)
+**Encryption:** AES-256-GCM with enhanced security
+**Key Derivation:** PBKDF2-HMAC-SHA512 (600,000 iterations)
+**Additional Security:** HMAC-SHA512 integrity verification, gzip compression
+**Format:** Versioned binary format
+
+See [ICMSF Security Specification](docs/ICMSF_SECURITY.md) for complete details.
 
 ## Development
 
@@ -103,12 +107,16 @@ npm start
 
 ## Security Features
 
-- ✅ Certificate-based authentication
+- ✅ Certificate-based SSH authentication
 - ✅ Password authentication disabled by default
-- ✅ AES-256-GCM encryption for stored data
-- ✅ Encrypted ICMSF files
+- ✅ Military-grade AES-256-GCM encryption
+- ✅ PBKDF2-HMAC-SHA512 key derivation (600k iterations)
+- ✅ Dual integrity verification (GCM + HMAC-SHA512)
+- ✅ Encrypted ICMSF files with compression
 - ✅ Secure key storage (OS keychain integration)
-- ✅ Optional full disk encryption support
+- ✅ File format versioning for forward compatibility
+- ✅ Cryptographically secure random generation
+- ✅ Defense-in-depth security architecture
 
 ## License
 
