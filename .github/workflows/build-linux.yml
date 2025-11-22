@@ -1,0 +1,66 @@
+name: Build Linux Client
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  build-linux:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: client/package-lock.json
+
+      - name: Install dependencies
+        run: |
+          cd client
+          npm ci
+
+      - name: Build Electron app
+        run: |
+          cd client
+          npm run build
+
+      - name: Build Linux packages
+        run: |
+          cd client
+          npm run dist:linux
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: List build outputs
+        run: |
+          echo "Build outputs:"
+          ls -lh client/release/*.AppImage || echo "No AppImage found"
+          ls -lh client/release/*.deb || echo "No DEB found"
+
+      - name: Upload Linux artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: Terminium-Linux
+          path: |
+            client/release/*.AppImage
+            client/release/*.deb
+          retention-days: 30
+
+      - name: Upload to GitHub Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            client/release/*.AppImage
+            client/release/*.deb
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
