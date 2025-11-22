@@ -37,6 +37,24 @@ sudo ./setup.sh
 
 ### Client Installation
 
+#### macOS
+See **[macOS Quick Start Guide](docs/MACOS_QUICKSTART.md)** or **[Complete macOS Installation](docs/MACOS_INSTALLATION.md)**
+
+**Quick install:**
+1. Download latest `.dmg` for your Mac (Intel/Apple Silicon/Universal)
+2. Open DMG and drag to Applications
+3. Launch from Applications folder
+
+**From Source:**
+```bash
+cd client
+npm install
+npm run dist:mac        # All architectures
+npm run dist:mac:intel  # Intel only
+npm run dist:mac:arm    # Apple Silicon only
+```
+
+#### Windows / Linux
 **From Release:**
 Download the latest release for your platform from the releases page.
 
@@ -45,7 +63,8 @@ Download the latest release for your platform from the releases page.
 cd client
 npm install
 npm run build
-npm run dist
+npm run dist:win    # Windows
+npm run dist:linux  # Linux
 ```
 
 ## First-Time Setup
