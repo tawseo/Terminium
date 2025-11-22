@@ -31,24 +31,37 @@ sudo ./setup.sh
 
 ## Post-Installation
 
-### 1. Generate Certificates
+### 1. Setup Disk Encryption (Recommended)
+```bash
+sudo /opt/terminium/scripts/setup-disk-encryption.sh
+```
+
+This sets up military-grade encryption:
+- LUKS2 full disk encryption (AES-XTS-512)
+- Encrypted swap space
+- eCryptfs encrypted home directories
+- TPM2 integration (if available)
+
+See [Server Encryption Guide](../docs/SERVER_ENCRYPTION.md) for details.
+
+### 2. Generate Certificates
 ```bash
 sudo /opt/terminium/scripts/generate-certs.sh
 ```
 
-### 2. Create Users
+### 3. Create Users
 ```bash
 sudo /opt/terminium/scripts/add-user.sh username
 ```
 
-### 3. Configure API
+### 4. Configure API
 ```bash
 cd /opt/terminium/api
 sudo cp .env.example .env
 sudo nano .env  # Edit configuration
 ```
 
-### 4. Start Services
+### 5. Start Services
 ```bash
 sudo systemctl start terminium
 sudo systemctl enable terminium
@@ -116,12 +129,38 @@ sudo systemctl restart terminium
 
 ## Security
 
+### Disk Encryption
+
+Terminium supports military-grade disk encryption:
+
+```bash
+# Interactive encryption setup
+sudo /opt/terminium/scripts/setup-disk-encryption.sh
+
+# Backup encryption keys (CRITICAL!)
+sudo /opt/terminium/scripts/backup-encryption-keys.sh
+
+# Manage LUKS keys
+sudo /opt/terminium/scripts/add-luks-key.sh
+```
+
+**Encryption Options**:
+- **LUKS2**: Full disk encryption (AES-XTS-512, Argon2id)
+- **eCryptfs**: Encrypted home directories
+- **dm-crypt**: Encrypted swap space
+- **TPM2**: Automatic unlock (if available)
+
+See **[Server Encryption Guide](../docs/SERVER_ENCRYPTION.md)** for complete documentation.
+
 ### Best Practices
-1. Change default SSH port
-2. Use strong passwords for users
-3. Regularly update system packages
-4. Monitor logs for suspicious activity
-5. Keep fail2ban enabled and configured
+1. Enable disk encryption (LUKS2 or eCryptfs)
+2. Change default SSH port
+3. Use strong passwords (20+ characters for encryption)
+4. Regularly update system packages
+5. Monitor logs for suspicious activity
+6. Keep fail2ban enabled and configured
+7. Backup LUKS headers regularly
+8. Store encryption passwords offline
 
 ### Fail2ban Configuration
 Located in `/etc/fail2ban/jail.d/terminium.conf`

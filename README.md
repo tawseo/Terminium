@@ -107,16 +107,30 @@ npm start
 
 ## Security Features
 
-- ✅ Certificate-based SSH authentication
-- ✅ Password authentication disabled by default
-- ✅ Military-grade AES-256-GCM encryption
+### Client Security
+- ✅ Military-grade AES-256-GCM encryption (ICMSF files)
 - ✅ PBKDF2-HMAC-SHA512 key derivation (600k iterations)
 - ✅ Dual integrity verification (GCM + HMAC-SHA512)
 - ✅ Encrypted ICMSF files with compression
 - ✅ Secure key storage (OS keychain integration)
 - ✅ File format versioning for forward compatibility
 - ✅ Cryptographically secure random generation
-- ✅ Defense-in-depth security architecture
+
+### Server Security
+- ✅ Certificate-based SSH authentication only
+- ✅ Password authentication disabled by default
+- ✅ LUKS2 full disk encryption (AES-XTS-512, Argon2id)
+- ✅ Encrypted swap and home directories
+- ✅ TPM2 integration for automatic unlock
+- ✅ UFW firewall with fail2ban
+- ✅ Multiple LUKS key slots (recovery options)
+- ✅ Secure key management and backup tools
+
+### Architecture
+- ✅ Defense-in-depth security model
+- ✅ Multiple encryption layers (client + server)
+- ✅ Compliance ready (PCI-DSS, HIPAA, GDPR)
+- ✅ NSA approved algorithms (AES-256)
 
 ## License
 
